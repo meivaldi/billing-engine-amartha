@@ -7,13 +7,7 @@ The **Billing Engine Service** is a microservice responsible for handling all bi
 - [Features](#features)
 - [Architecture](#architecture)
 - [Installation](#installation)
-- [Usage](#usage)
-- [Configuration](#configuration)
-- [Database Migrations](#database-migrations)
 - [API Endpoints](#api-endpoints)
-- [Docker Integration](#docker-integration)
-- [Contributing](#contributing)
-- [License](#license)
 
 ## Features
 
@@ -83,3 +77,7 @@ Below are some key API endpoints exposed by the Billing Engine Service:
 
 - **GET /loan/outstanding/:userId**: Get total outstanding of certain user.
 - **GET /loan/deliquent-users**: Get all the users who has delinquent more than twice.
+
+You can also using postman collection that already provided in this repo.
+- **Billing-Engine.postman_collection.json**
+- **billing-engine-local.postman_environment.json**

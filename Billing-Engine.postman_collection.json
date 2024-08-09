@@ -1,0 +1,147 @@
+{
+	"info": {
+		"_postman_id": "b28c310d-5870-4237-ac51-b4c772677897",
+		"name": "Billing Engine",
+		"description": "The **Billing Engine Service** is a microservice responsible for handling all billing-related operations within the application. It can make loan, apply interest, and scheduling for the loans.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "1907792"
+	},
+	"item": [
+		{
+			"name": "Make Payment",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"billing_id\": 1,\n    \"amount\": 110000\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}:{{port}}/loan/pay",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"loan",
+						"pay"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Repay",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"billing_id\": 1,\n    \"amount\": 11000\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}:{{port}}/loan/repay",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"loan",
+						"repay"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Make Loan",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Hello\",\n    \"age\": 35,\n    \"working_status\": \"employee\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}:{{port}}/loan/make",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"loan",
+						"make"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Outstanding",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}:{{port}}/loan/outstanding/:userId",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"loan",
+						"outstanding",
+						":userId"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "10"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Deliquent Users",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}:{{port}}/loan/deliquent-users",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"loan",
+						"deliquent-users"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
