@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  postgre:
+    image: postgres:latest
+    container_name: postgres_db
+    environment:
+      POSTGRES_PASSWORD: billingengine
+      POSTGRES_DB: billing
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  migrate:
+    image: migrate/migrate
+    command: ["-path", "/migrations", "-database", "postgres://postgres:billingengine@postgre:5432/billing?sslmode=disable", "up"]
+    volumes:
+      - ./migrations:/migrations
+    depends_on:
+      - postgre
+
+volumes:
+  db_data:

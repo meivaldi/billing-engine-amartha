@@ -1,7 +1,8 @@
 package model
 
 type User struct {
-	name       string `json:"name"`
-	age        int    `json:"age"`
-	workStatus string `json:"working_status"`
+	UserID   uint64 `json:"user_id,omitempty"`
+	Name     string `json:"name,omitempty"`
+	Age      int    `json:"age,omitempty"`
+	WorkType string `json:"working_status,omitempty"`
 }

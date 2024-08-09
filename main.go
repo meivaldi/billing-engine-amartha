@@ -1,41 +1,55 @@
 package main
 
 import (
-	"encoding/json"
+	"database/sql"
 	"fmt"
 	"log"
 	"net/http"
+
+	_ "github.com/lib/pq"
+
+	"github.com/julienschmidt/httprouter"
+	httpDel "github.com/meivaldi/billing-engine/delivery/http"
+	dbRepo "github.com/meivaldi/billing-engine/repository/db"
+	billingUc "github.com/meivaldi/billing-engine/usecase/billing"
+	paymentUc "github.com/meivaldi/billing-engine/usecase/payment"
+	userUc "github.com/meivaldi/billing-engine/usecase/user"
 )
 
-// Define a struct for the response
-type Response struct {
-	Message string `json:"message"`
-}
-
 func main() {
-	// Define the handler for the root endpoint
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		response := Response{Message: "Billing Engine"}
-		jsonResponse(w, response)
-	})
+	router := httprouter.New()
 
-	// Define the handler for the /greet endpoint
-	http.HandleFunc("/greet", func(w http.ResponseWriter, r *http.Request) {
-		name := r.URL.Query().Get("name")
-		if name == "" {
-			name = "Guest"
-		}
-		response := Response{Message: fmt.Sprintf("Hello, %s!", name)}
-		jsonResponse(w, response)
-	})
+	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
+		"localhost", 5432, "postgres", "billingengine", "billing")
+
+	db, err := sql.Open("postgres", psqlInfo)
+	if err != nil {
+		log.Fatalf("failed to open connection for db, err: %v", err)
+		return
+	}
+	defer db.Close()
+
+	repository, err := dbRepo.New(db)
+	if err != nil {
+		log.Printf("failed to init repository, err: %v", err)
+		return
+	}
+
+	userUsecase := userUc.New(repository)
+	billingUsecase := billingUc.New(repository)
+	paymentUsecase := paymentUc.New(repository)
+
+	handler := httpDel.NewHttpHandler(userUsecase, billingUsecase, paymentUsecase)
+
+	// make a loan
+	router.POST("/loan/make", handler.MakeLoan)
+	router.POST("/loan/pay", handler.MakePayment)
+	router.POST("/loan/repay", handler.Repay)
+
+	router.GET("/loan/outstanding/:userId", handler.GetOutstanding)
+	router.GET("/loan/deliquent-users", handler.GetDeliquentUsers)
 
 	// Start the server
-	fmt.Println("Starting server on port 8080...")
-	log.Fatal(http.ListenAndServe(":8080", nil))
-}
-
-// jsonResponse writes a JSON response to the ResponseWriter
-func jsonResponse(w http.ResponseWriter, data interface{}) {
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(data)
+	fmt.Println("Starting server on port 8082...")
+	log.Fatal(http.ListenAndServe(":8082", router))
 }
